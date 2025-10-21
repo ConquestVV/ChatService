@@ -10,12 +10,23 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+tasks.register('runChatServiceTests', JavaExec) {
+    group = 'verification'
+    description = 'Runs ChatService tests without external test frameworks.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'ru.netology.ChatServiceTestRunner'
 }
 
 test {
-    useJUnitPlatform()
+    dependsOn(tasks.named('runChatServiceTests'))
+    doLast {
+        if (!state.skipped) {
+            println('ChatService tests executed via runChatServiceTests task.')
+        }
+    }
 }
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(21)
 }
